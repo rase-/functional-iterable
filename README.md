@@ -51,7 +51,7 @@ Array.from(chain([2,3,4,5,6])
   .transform(takeWhile(x => x < 5))
   .apply()
 )
-// => [2,3,4]
+// => [3,4]
 ```
 
 ### With async generator
