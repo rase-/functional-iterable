@@ -23,11 +23,33 @@ Array.from(
     .map((x: number) => x * 2)
     .map((x: number) => x - 10)
     .filter((x: number) => x >= 0)
-    .transform(takeWhile((x: number) => x <= 5))
     .flatMap((x: number) => [x, x])
     .map((x: number) => x + 1)
     .apply()
 )
+```
+
+### With custom transform:
+```js
+function takeWhile<T>(predicate: (arg: T) => boolean): Transform<T, T> {
+  return (it: Iterable<T>) => {
+    return {
+      [Symbol.iterator]: function* () {
+        const gen = it[Symbol.iterator]();
+        let itResult = gen.next();
+        while (predicate(itResult.value)) {
+          yield itResult.value;
+          itResult = gen.next();
+        }
+      }
+    };
+  };
+}
+
+Array.from(chain([2,3,4,5,6])
+  .map((x: number) => x + 1)
+  .transform(takeWhile(x => x < 5)))
+// => [2,3,4]
 ```
 
 ### With async generator
