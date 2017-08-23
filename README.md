@@ -48,7 +48,9 @@ function takeWhile<T>(predicate: (arg: T) => boolean): Transform<T, T> {
 
 Array.from(chain([2,3,4,5,6])
   .map((x: number) => x + 1)
-  .transform(takeWhile(x => x < 5)))
+  .transform(takeWhile(x => x < 5))
+  .apply()
+)
 // => [2,3,4]
 ```
 
