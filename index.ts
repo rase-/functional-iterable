@@ -65,6 +65,20 @@ function reduce<A, B>(f: (acc: B, arg: A) => B, val: B, it: Iterable<A>): B {
   return acc;
 }
 
+function flatMap<A, B>(f: (arg: A) => Iterable<B>): Transform<A, B> {
+  return (it: Iterable<A>) => {
+    return {
+      [Symbol.iterator]: function* () {
+        for (const x of it) {
+          for (const y of f(x)) {
+            yield y;
+          }
+        }
+      }
+    };
+  };
+}
+
 class FunctionalIterator<T> {
   it: Iterable<T>
   folded: boolean
@@ -126,6 +140,8 @@ console.log(
       .transform(map((x: number) => x - 10))
       .transform(filter((x: number) => x >= 0))
       .transform(takeWhile((x: number) => x <= 5))
+      .transform(flatMap((x: number) => [x, x]))
+      .transform(map((x: number) => x + 1))
       .apply()
   )
 );
