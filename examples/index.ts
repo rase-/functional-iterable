@@ -30,16 +30,26 @@
   */
 
 // Examples
+// polyfill asyncIterator
+(Symbol as any).asyncIterator = Symbol.asyncIterator || Symbol("Symbol.asyncIterator");
+
 import chain from '../index';
 import map from '../transforms/map';
 import filter from '../transforms/filter';
 import reduce from '../transforms/reduce';
 import takeWhile from '../transforms/take-while';
 
-const sourceA = [1,2,3,4,5];
-const sourceB = function*(){
+const sourceA: Iterable<number> = [1,2,3,4,5];
+const sourceB: () => Iterable<number> = function*(){
   for (let i = 0; i < 10; i++) {
     yield i;
+  }
+};
+const sourceC: () => AsyncIterable<number> = async function*(){
+  for (let i = 0; i < 10; i++) {
+    yield await new Promise<number>((resolve, reject) => {
+      setTimeout(resolve(i), 1000);
+    });
   }
 };
 
@@ -54,7 +64,7 @@ console.log(reduce((acc: number, x: number) => acc * x, 1, sourceB()));
 
 console.log(
   Array.from(
-    chain(sourceB())
+    chain<number>(sourceB())
       .map((x: number) => x * 2)
       .map((x: number) => x - 10)
       .filter((x: number) => x >= 0)
@@ -66,7 +76,12 @@ console.log(
 );
 
 console.log(
-  chain([5,5,2,2,3])
+  chain<number>([5,5,2,2,3])
     .map((x: number) => x + 1)
     .reduce((acc: number, x: number) => acc + x, 0)
 );
+
+chain<number>(sourceC())
+  .map((x: number) => x + 1)
+  .reduce((acc: number, x: number) => acc + x, 0)
+  .then((sum) => console.log('promised sum', sum));
