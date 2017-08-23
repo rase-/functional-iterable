@@ -45,6 +45,7 @@ const sourceB: () => Iterable<number> = function*(){
     yield i;
   }
 };
+
 const sourceC: () => AsyncIterable<number> = async function*(){
   for (let i = 0; i < 10; i++) {
     yield await new Promise<number>((resolve, reject) => {
