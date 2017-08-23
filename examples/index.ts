@@ -1,5 +1,5 @@
 /*
-  Plans:
+  Sketches:
   ex 1: build then apply to any iterator
   chain()
     .map(x => x * x)
