@@ -86,8 +86,8 @@ console.log(
 chain<number>(sourceC())
   .peek(x => console.log('source', x))
   .map((x: number) => x + 1)
-  .peek(x => console.log('mapped', x))
   .transform(asyncTakeWhile((x: number) => x <= 100))
+  .peek(x => console.log('mapped', x))
   .reduce((acc: number, x: number) => acc + x, 0)
   .then((sum) => console.log('promised sum', sum))
   .catch((e) => console.error(e));
