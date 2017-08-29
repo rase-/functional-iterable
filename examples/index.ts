@@ -38,6 +38,7 @@ import map from '../transforms/map';
 import filter from '../transforms/filter';
 import reduce from '../transforms/reduce';
 import takeWhile from '../transforms/take-while';
+import asyncTakeWhile from '../transforms/async/take-while';
 
 const sourceA: Iterable<number> = [1,2,3,4,5];
 const sourceB: () => Iterable<number> = function*(){
@@ -47,7 +48,7 @@ const sourceB: () => Iterable<number> = function*(){
 };
 
 const sourceC: () => AsyncIterable<number> = async function*(){
-  for (let i = 0; i < 10; i++) {
+  for (let i = 0; ; i++) {
     yield await new Promise<number>((resolve, reject) => {
       setTimeout(resolve(i), 1000);
     });
@@ -86,5 +87,7 @@ chain<number>(sourceC())
   .peek(x => console.log('source', x))
   .map((x: number) => x + 1)
   .peek(x => console.log('mapped', x))
+  .transform(asyncTakeWhile((x: number) => x <= 100))
   .reduce((acc: number, x: number) => acc + x, 0)
-  .then((sum) => console.log('promised sum', sum));
+  .then((sum) => console.log('promised sum', sum))
+  .catch((e) => console.error(e));
