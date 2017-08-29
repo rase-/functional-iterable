@@ -1,10 +1,12 @@
 import map from './transforms/map';
 import filter from './transforms/filter';
+import peek from './transforms/peek';
 import reduce from './transforms/reduce';
 import flatMap from './transforms/flat-map';
 
 import amap from './transforms/async/map';
 import afilter from './transforms/async/filter';
+import apeek from './transforms/async/peek';
 import areduce from './transforms/async/reduce';
 import aflatMap from './transforms/async/flat-map';
 
@@ -26,6 +28,10 @@ class FunctionalIterator<T> {
 
   filter(f: (arg: T) => boolean): FunctionalIterator<T> {
     return this.transform(filter(f));
+  }
+
+  peek(f: (arg: T) => void): FunctionalIterator<T> {
+    return this.transform(peek(f));
   }
 
   flatMap<A>(f: (arg: T) => Iterable<A>): FunctionalIterator<A> {
@@ -58,6 +64,10 @@ class FunctionalAsyncIterator<T> {
 
   filter(f: (arg: T) => boolean): FunctionalAsyncIterator<T> {
     return this.transform(afilter(f));
+  }
+
+  peek(f: (arg: T) => void): FunctionalAsyncIterator<T> {
+    return this.transform(apeek(f));
   }
 
   flatMap<A>(f: (arg: T) => AsyncIterable<A>): FunctionalAsyncIterator<A> {
